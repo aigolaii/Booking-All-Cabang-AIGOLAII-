@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laporan Sales 16 Cabang</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    tr.late {
+      background-color: #ffe5e5;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Laporan Sales Target & Pencapaian - 16 Cabang</h2>
+
+<form id="salesForm">
+  <table>
+    <thead>
+      <tr>
+        <th>Cabang</th>
+        <th>Target</th>
+        <th>Pencapaian</th>
+        <th>% Pencapaian</th>
+      </tr>
+    </thead>
+    <tbody id="salesBody">
+      <!-- Baris data cabang akan dimuat di sini -->
+    </tbody>
+  </table>
+  <button type="submit">Hitung</button>
+</form>
+
+<script>
+  const cabangs = [
+    "BEKASI 3", "BEKASI 2", "SIBOLGA", "JOGJA",
+    "PADANG", "JAKSEL", "TELE HO", "BEKASI 1",
+    "PONDOK GEDE", "CENGKARENG", "CIKARANG", "BINTARO",
+    "CAWANG", "BSD", "CILEUNGSI", "GARUT"
+  ];
+
+  const salesBody = document.getElementById("salesBody");
+  const targetTetap = 55;
+
+  cabangs.forEach((nama, i) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${nama}</td>
+      <td>${targetTetap}</td>
+      <td><input type="number" name="pencapaian${i}" required></td>
+      <td id="persen${i}">-</td>
+    `;
+    salesBody.appendChild(row);
+  });
+
+  document.getElementById("salesForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    cabangs.forEach((_, i) => {
+      const target = targetTetap;
+      const pencapaian = parseFloat(document.querySelector(`[name="pencapaian${i}"]`).value) || 0;
+      const persen = target > 0 ? (pencapaian / target * 100).toFixed(1) : "0.0";
+      const persenCell = document.getElementById(`persen${i}`);
+      persenCell.innerText = persen + "%";
+
+      // Tandai merah jika tidak mencapai target
+      const row = persenCell.parentElement;
+      if (pencapaian < target) {
+        row.classList.add("late");
+      } else {
+        row.classList.remove("late");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
